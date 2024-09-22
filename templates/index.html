@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversor de Moedas</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Conversor de Moedas</h1>
+        <form id="convertForm">
+            <label for="fromCurrency">De:</label>
+            <select id="fromCurrency" name="from" required>
+                <option value="USD">Dólar Americano (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+                <option value="BRL">Real Brasileiro (BRL)</option>
+            </select>
+
+            <label for="toCurrency">Para:</label>
+            <select id="toCurrency" name="to" required>
+                <option value="USD">Dólar Americano (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+                <option value="BRL">Real Brasileiro (BRL)</option>
+            </select>
+
+            <input type="number" id="amount" name="amount" placeholder="Valor" required>
+            <button type="submit">Converter</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('convertForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch(`/convert?from=${formData.get('from')}&to=${formData.get('to')}&amount=${formData.get('amount')}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = `Convertido: ${data.converted_amount} ${formData.get('to')} (Taxa: ${data.rate})`;
+                })
+                .catch(error => {
+                    document.getElementById('result').textContent = 'Erro na conversão.';
+                    console.error('Erro na requisição', error);
+                });
+        });
+    </script>
+</body>
+</html>
